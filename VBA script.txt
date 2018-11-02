@@ -1,0 +1,165 @@
+Sub Homework2()
+
+For Each ws In Worksheets
+
+      'Set up the variables
+        Dim Ticker As String
+        Dim Volume As Double
+        Dim Lastrow As Double
+        'Moderade Part Variables
+        Dim Aperture As Double
+        Dim Closure As Double
+        Dim Change As Double
+        Dim Aperture1 As Double
+        Dim Percentage As Double
+        'Comparizon Variables Hard
+        Dim GreatIncrease As Double
+        Dim GingreaseTicker As String
+        Dim GreatDecrease As Double
+        Dim GdecreaseTicker As String
+        Dim GreatVolume As Double
+        Dim GVolumeTicker As String
+    
+        
+        'Set headers
+        ws.Range("I1") = "TICKER"
+        ws.Range("L1") = "TOTAL STOCK VOLUME"
+        ws.Range("K1") = "Percent change"
+        ws.Range("J1") = "Yearly Change"
+        ws.Range("O1") = "Ticker"
+        ws.Range("P1") = "Value"
+    
+    
+        ' Determine the Last Row
+        Lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+        ' Keep track of the location for each tickerbrand in the summary table
+        Dim Summary_Table_Row As Integer
+        Summary_Table_Row = 2
+
+        'Set the value of Volume
+        Volume = 0
+        Change = 0
+        GreatIncrease = 0
+        GreatDecrease = 0
+        GreatVolume = 0
+    
+    
+    
+
+            ' Start the for loop
+            For I = 2 To Lastrow
+        
+            Aperture = ws.Cells(I, 3).Value
+        
+        
+            If ws.Cells(I, 1).Value <> ws.Cells((I + 1), 1).Value Then
+            Ticker = ws.Cells(I, 1).Value
+            Volume = Volume + ws.Cells(I, 7).Value
+            Closure = ws.Cells(I, 6).Value
+        
+            'Calculate the Change
+            Change = Closure - Aperture1
+        
+            'Calculate the percentage
+            If Aperture1 <> 0 Then
+            Percentage = (Change / Aperture1)
+            Else
+            Percentage = 0
+            End If
+        
+            'Print the Percentage
+            ws.Range("K" & Summary_Table_Row).Value = Percentage
+
+            'formating the Percentage
+            ws.Range("K" & Summary_Table_Row).NumberFormat = "0.00%"
+        
+            'Print the Yearly Change
+            ws.Range("J" & Summary_Table_Row).Value = Change
+        
+            'formating for Yearly change
+            If ws.Range("J" & Summary_Table_Row).Value > 0 Then
+            ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
+            ElseIf ws.Range("J" & Summary_Table_Row).Value < 0 Then
+            ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+            End If
+        
+        
+            ' Print the Credit Ticker in the Summary Table
+            ws.Range("I" & Summary_Table_Row).Value = Ticker
+        
+            ' Print the Volume to the Summary Table
+            ws.Range("L" & Summary_Table_Row).Value = Volume
+
+            ' Add one to the summary table row
+            Summary_Table_Row = Summary_Table_Row + 1
+          
+            ' Reset the volume Total
+            Volume = 0
+            'Reset the Change
+            Change = 0
+            
+            'Reset Aperture Value
+            Aperture1 = 0
+        
+            Else
+            'Calculate the new aperture
+                If Aperture1 = 0 Then
+                Aperture1 = Aperture
+                Else
+                Aperture1 = Aperture1
+                End If
+        
+            'Calculate the Volume
+            Volume = Volume + ws.Cells(I, 7).Value
+                
+        End If
+               
+           
+        Next I
+    
+    
+        For j = 2 To Lastrow
+                
+            'Find the Value for "Greatest % increase"
+            If GreatIncrease < ws.Cells(j, 11).Value Then
+            GreatIncrease = ws.Cells(j, 11).Value
+            GincreaseTicker = ws.Cells(j, 9).Value
+            End If
+        
+            'Find the Value for "Greatest % decrease"
+            If GreatDecrease > ws.Cells(j, 11).Value Then
+            GreatDecrease = ws.Cells(j, 11).Value
+            GdecreaseTicker = ws.Cells(j, 9).Value
+            End If
+        
+            'Find the Value for "Greatest Volume"
+            If GreatVolume < ws.Cells(j, 12).Value Then
+            GreatVolume = ws.Cells(j, 12).Value
+            GVolumeTicker = ws.Cells(j, 9).Value
+            End If
+        Next j
+    
+        'Print "Greatest % increase"
+            ws.Range("N2") = "Greatest % increase"
+            ws.Range("O2") = GincreaseTicker
+            ws.Range("P2") = GreatIncrease
+            ws.Range("P2").NumberFormat = "0.00%"
+                
+        'Print "Greatest % decrease"
+            ws.Range("N3") = "Greatest % decrease"
+            ws.Range("O3") = GdecreaseTicker
+            ws.Range("P3") = GreatDecrease
+            ws.Range("P3").NumberFormat = "0.00%"
+              
+        'Print "Greatest % increase"
+            ws.Range("N4") = "Greatest Volume"
+            ws.Range("O4") = GVolumeTicker
+            ws.Range("P4") = GreatVolume
+
+Next ws
+
+End Sub
+
+
+
